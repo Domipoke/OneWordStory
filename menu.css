@@ -1,0 +1,149 @@
+body {
+    font-size: 10px;
+    font-family: Roboto, sans-serif;
+    background-color: #ff7b73;
+    margin: 0;
+    display: grid;
+    height: 100vh;
+    place-items: center;
+}
+.lg-checkbox {
+    display: none;
+}
+.lg-checkbox:checked + .lg-formContainer .lg-form {
+    width: 37.5em;
+}
+.lg-checkbox:checked + .lg-formContainer .lg-form__toggle {
+    visibility: hidden;
+    opacity: 0;
+    transform: scale(0.7);
+}
+.lg-checkbox:checked + .lg-formContainer .lg-form__input, .lg-checkbox:checked + .lg-formContainer .lg-form__buttonLabel {
+    transition: 0.2s 0.1s;
+    visibility: visible;
+    opacity: 1;
+    transform: scale(1);
+}
+/*
+.lg-checkbox:not(:checked) + .lg-formContainer .lg-form__input:required:valid ~ .lg-form__toggle::before, .lg-checkbox:checked + .lg-formContainer .lg-form__input:required:valid ~ .lg-form__toggle::before {
+    content: "Thank You! \1F60A";
+}
+*/
+.lg-checkbox:not(:checked) + .lg-formContainer .lg-form__input:required:valid ~ .lg-form__toggle {
+    pointer-events: none;
+    cursor: default;
+}
+.lg-formContainer, .lg-form, .lg-form__toggle {
+    width: 20em;
+    height: 6.25em;
+}
+.lg-formContainer {
+    position: relative;
+    font-weight: 700;
+}
+.lg-form, .lg-form__toggle {
+    position: absolute;
+    border-radius: 6.25em;
+    background-color: #fff;
+    transition: 0.2s;
+}
+.lg-form {
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.625em;
+    box-sizing: border-box;
+    box-shadow: 0 0.125em 0.3125em rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+}
+.lg-form__toggle {
+    color: #ff7b73;
+    top: 0;
+    cursor: pointer;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.lg-form__toggle::before {
+    font-size: 1.75em;
+    content: attr(data-title);
+}
+.lg-form__input, .lg-form__button {
+    font: inherit;
+    border: 0;
+    outline: 0;
+    border-radius: 5em;
+    box-sizing: border-box;
+}
+.lg-form__input, .lg-form__buttonLabel {
+    font-size: 1.75em;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.7);
+    transition: 0s;
+}
+.lg-form__input {
+    color: #fcc;
+    height: 100%;
+    width: 100%;
+    padding: 0 0.714em;
+}
+.lg-form__input::placeholder {
+    color: currentColor;
+}
+.lg-form__input:required:valid {
+    color: #ff7b73;
+}
+.lg-form__input:required:valid + .lg-form__buttonLabel {
+    color: #fff;
+}
+.lg-form__input:required:valid + .lg-form__buttonLabel::before {
+    pointer-events: initial;
+}
+.lg-form__buttonLabel {
+    color: #ffaea9;
+    height: 100%;
+    width: auto;
+}
+.lg-form__buttonLabel::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    cursor: pointer;
+}
+.lg-form__button {
+    color: inherit;
+    padding: 0;
+    height: 100%;
+    width: 5em;
+    background-color: #ff7b73;
+}
+
+@keyframes err {
+    0% {
+        height: 0px;
+        color: transparent;
+    }
+    50% {
+        color: transparent;
+    }
+    100% {
+        height: 16px;
+        color: white;
+    }
+}
+#error {
+    position: absolute;
+    top: 0%;
+    font-size: 16px;
+    background-color: black;
+    width: 100%;
+    left:0%;
+    color:white;
+    text-align: center;
+    animation-name: err;
+    animation-duration: 1s;
+}

@@ -1,6 +1,69 @@
 <html>
-    <head></head>
+    <head>
+        <link href="/style/global" rel="stylesheet" type="text/css">
+        <link href="/style/menu" rel="stylesheet" type="text/css">
+    </head>
     <body>
-        <script src=""></script>
+        <input class="lg-checkbox remove" type="checkbox" id="checkbox">
+        <div class="lg-formContainer remove">
+            <div class="lg-form remove" >
+                <input id="usernameinput" class="lg-form__input remove" placeholder="Username" type="text" maxlength="16" pattern="[A-Za-z]{3,}" required>
+                <button class="lg-form__buttonLabel lg-form__button remove" onclick="JoinAsUser()">Join</button>
+                </label>
+                <label class="lg-form__toggle remove" for="checkbox" data-title="Join"></label>
+            </div>
+            <br>
+        </div>
+        <div><span id="error">Nothing for now...</span></div>
+        <script src="https://cdn.socket.io/4.1.2/socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
+        <script>
+            const socket = io();
+            var players = [];
+            var nwin = true
+            function JoinAsUser() {
+                const regval = new RegExp('[A-Za-z]{3,}');
+                var us = document.getElementById("usernameinput").value
+                if (us.match(regval)==us) {
+                    if (!players.includes(us)) {
+                        socket.emit("join",us)
+                        var l = document.getElementsByClassName("remove").length
+                        for (var i = 0;i<l;i++) {
+                            document.getElementsByClassName("remove")[i].remove()
+                        }
+                        /*
+                            Table with all user (overflow y -> scroll; overflow x scroll only with name)
+                            table constructor:
+                            Name | IsTurn
+                            Name | IsTurn
+                            Name | IsTurn
+                            Name | IsTurn
+
+                            //
+                            IsTurn -> 
+                                Yes: ✓
+                                No: ✘
+                            
+                        */
+                    } else {
+                        SendError("Nome utente già in uso")
+                    }
+                } else {
+                    SendError("Nome utente non valido")
+                }
+            }
+            function SendError(text) {
+                document.getElementById("error").innerHTML = text
+            }
+            socket.on("start",function(list){
+                if (nwin) {
+                    players=list.players
+                }
+                nwin = false;
+                console.log(players)
+            })
+            socket.on("update",function(list){
+                players=list.players
+            })
+        </script>
     </body>
 </html>
