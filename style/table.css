@@ -1,0 +1,38 @@
+#pltb {
+    position: absolute;
+    width: 200px;
+    top: 15%;
+    left: 0%;
+    display: block;
+    border-bottom: 1px black solid;/*rimuovere*/
+    overflow-y: scroll;
+    height: 70%; 
+    scrollbar-width: none;
+    padding-left: 10px;
+}
+#pltb::-webkit-scrollbar {
+    display: none;
+}
+#pltb_table {
+    height:100%;
+    width:100%;
+    overflow-y: scroll;
+}
+#pltb tr {
+    position: sticky;
+    scroll-behavior: smooth;
+}
+
+
+#pltb_tr {
+    height:32px;
+    width:50%
+}
+#pltb_td_name {
+    height:fit-content;
+    width: 150px;
+}
+#pltb_td_turn {
+    height:fit-content;
+    width:50px;
+}

@@ -1,0 +1,135 @@
+<html>
+    <head>
+        <link href="/style/menu" rel="stylesheet" type="text/css">
+        <link href="/style/console" rel="stylesheet" type="text/css">
+        <link href="/style/utils" rel="stylesheet" type="text/css">
+        <link href="/style/table" rel="stylesheet" type="text/css">
+        <link href="/style/global" rel="stylesheet" type="text/css">
+    </head>
+    <body>
+        <div>
+            <input class="lg-checkbox remove" type="checkbox" id="checkbox">
+            <div class="lg-formContainer remove">
+                <div class="lg-form remove" >
+                    <input pattern="[0-9]{0,3}" id="pwdinput" class="lg-form__input remove" placeholder="Codice" type="text" maxlength="3" required>
+                    <button class="lg-form__buttonLabel lg-form__button remove" onclick="JoinAsAdmin()">Join</button>
+                    <button style="color:cornsilk" class="lg-form__buttonLabel lg-form__button remove" onclick="newCode()">Nuovo</button>
+                    </label>
+                    <label class="lg-form__toggle remove" for="checkbox" data-title="Join"></label>
+                </div>
+                <br>
+            </div>
+            <div><span id="error">Nothing for now...</span></div>
+            <div id="pltb"></div>
+            <div id="menu" style="visibility: hidden;">
+                <span onclick="closemenu()" class="cross crl noselect">\</span>
+                <span onclick="closemenu()" class="cross clr noselect">/</span>
+                <span id="preus">User: </span><span id="username"></span>
+                <div id="option">
+                    <span onClick="kick(this)">Kick</span>
+                </div>
+            </div>
+            <div id="game">
+                <button onclick="" id="start">START</button>
+                <br><br><br><br><br><br><br><br>
+                <a href="Stories" target="_blank" id="ast">Stories</a>
+            </div>
+        </div>
+        <script src="https://cdn.socket.io/4.1.2/socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
+        <script src="/js/utilsdev"></script>
+        <script>
+            const socket = io();
+            var pwd
+            var players
+            function JoinAsAdmin() {
+                if (pwd==document.getElementById("pwdinput").value) {
+                    SendError("codice corretto")
+                    AdminPage()
+                } else {
+                    socket.emit("newCode")
+                    SendError("Password Errata")
+                }
+            }
+            function newCode() {
+                socket.emit("newCode")
+            }
+            function SendError(text) {
+                document.getElementById("error").innerHTML = text
+            }
+            function AdminPage() {
+                var l = document.getElementsByClassName("remove").length
+                for (var i = 0;i<l;i++) {
+                    if (document.getElementsByClassName("remove")[i]) document.getElementsByClassName("remove")[i].remove()
+                }
+                document.getElementById("error").style.height = 0 
+                document.getElementById("error").style.visibility = "hidden"
+                createTable()
+            }
+            function createTable() {
+                var pos = document.getElementById("pltb")
+                
+                var table = "<table d='pltb_table'>"
+                if (players.length==1) {
+                    table=table+"<th>"+players.length+" Giocatore</th>"
+                } else {
+                    table=table+"<th>"+players.length+" Giocatori</th>"
+                }
+                
+                for (var i=0;i<players.length;i++) {
+                    console.log(players[i],i,players.length)
+                    table=table+"<tr id='pltb_tr' class='pl_"+players[i]+"'>"
+                    table=table+"<td id='pltb_td_name'>"
+                    table=table+"<span id='"+players[i]+"_name'>"
+                    table=table+players[i]
+                    table=table+"</span>"
+                    table=table+"</td>"
+                    //table=table+"<td id='pltb_tb_turn'>"
+                    //table=table+"<span id='"+players[i]+"_turn'>"
+                    //table=table+"</span>"
+                    //table=table+"</td>"
+                    table=table+"</tr>"
+                }
+                table=table+"</table>"
+                pos.innerHTML = table
+                console.log("### Updated Table")
+                addAdminPerms()
+            }
+            function closemenu() {
+                document.getElementById("menu").style.visibility = "hidden";
+                document.getElementById("menu").getElementById("username").innerHTML = ""
+            }
+            function openmenu(el) {
+                document.getElementById("menu").style.visibility = "visible";
+                document.getElementById("username").innerHTML = el.getElementsByTagName("span")[0].innerHTML
+
+            }
+            function kick(x) {
+                var u = document.querySelector("#menu #username").innerHTML
+                socket.emit("kick", u)
+            }
+            function addAdminPerms() {
+                var root = document.getElementById("pltb")
+                var chid = "pltb_td_name"
+                var l = root.getElementsByTagName("td").length
+                for (var i = 0; i<l;i++) {
+                    if (root.getElementsByTagName("td")[i].id==chid) {
+                        root.getElementsByTagName("td")[i].addEventListener("click", function (e) {
+                            openmenu(e.target)
+                        })
+                    }
+                }
+            }
+            socket.on("start", function (list) {
+                pwd=list.pwd
+                players=list.players
+            })
+            socket.on("update", function (list) {
+                pwd=list.pwd
+                players=list.players
+                if (document.getElementById("pltb").innerHTML.length>0) {
+                    createTable()
+                }
+            })
+        </script>
+    </body>
+</html>

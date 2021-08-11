@@ -1,0 +1,67 @@
+#menu {
+  position: absolute;
+  right: 20;
+  top: 20;
+  background: black;
+  width: 200px;
+  height: 200px;
+
+  border: 3px white outset;
+}
+#menu .cross {
+  color: whitesmoke;
+  font-size: 30px;
+  right: 10;
+  position: absolute;
+}
+.cross:hover {
+  cursor: pointer;
+}
+#menu .clr {
+  transform: rotate(200deg);
+}
+#menu .crl {
+  transform: rotate(160deg);
+}
+#pltb_td_name:hover {
+  border: 1px solid white;
+  cursor: pointer;
+}
+
+/*CONSOLE COMMAND*/
+#option {
+    position: absolute;
+    left: 0px;
+    top: 35px
+}
+#option span {
+    font-size: 20px;
+    color: whitesmoke;
+    margin: 5px
+}
+
+#menu #username {
+    color: white;
+    font-size: 12px
+}
+#menu #preus {
+    color: white;
+    font-size: 12px
+}
+
+#game {
+    width: 400px;
+    height: 400px;
+    position: absolute;
+    border: 1px solid white
+}
+#game #start {
+    width: 150px;
+    height: 50px;
+    margin-left: 125px;
+    margin-top: 50px
+}
+#game #ast {
+    margin-left: 125px;
+    font-size: 50px;
+}

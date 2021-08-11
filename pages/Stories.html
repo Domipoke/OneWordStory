@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <link href="/style/stories" rel="stylesheet" type="text/css">
+    </head>
+    <body>
+        <script src="https://cdn.socket.io/4.1.2/socket.io.min.js"
+        integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous">
+        </script>
+        <script>
+            const socket = io()
+            socket.on("storysave", function (story) {
+                for (var i = 0; i<story.length; i++) {
+                    var writer = story[i].user
+                    var word = story[i].text
+                    var html = "<div class='story'>"
+                        +""
+                        +""
+                        +""
+                        +""
+                        + "</div>"
+                }
+            })
+        </script>
+    </body>
+</html>

@@ -1,0 +1,144 @@
+<html>
+
+<head>
+    <link href="/style/menu" rel="stylesheet" type="text/css">
+    <link href="/style/table" rel="stylesheet" type="text/css">
+    <link href="/style/ingame" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+    <div>
+        <input class="lg-checkbox remove" type="checkbox" id="checkbox">
+        <div class="lg-formContainer remove">
+            <div class="lg-form remove">
+                <input id="usernameinput" class="lg-form__input remove" placeholder="Username" type="text"
+                    maxlength="16" pattern="[A-Za-z]{3,}" required>
+                <button class="lg-form__buttonLabel lg-form__button remove" onclick="JoinAsUser()">Join</button>
+                </label>
+                <label class="lg-form__toggle remove" for="checkbox" data-title="Join"></label>
+            </div>
+            <br>
+        </div>
+        <div><span id="error">Nothing for now...</span></div>
+    </div>
+    <div id="pltb"></div>
+    <div id="yourname">
+        <span id="name"></span>
+    </div>
+    <div id="word">
+        <input id="word_input" type="text" placeholder="word" pattern="[\S]{1,}" required />
+        <label for="checkbox" id="word_Lb">
+            <button id="word_button" type="button" onclick="pushWord()">Send</button>
+        </label>
+    </div>
+    <script src="https://cdn.socket.io/4.1.2/socket.io.min.js"
+        integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous">
+    </script>
+    <script>
+        const socket = io();
+        var players = [];
+        var nwin = true
+
+        function SendError(text) {
+            document.getElementById("error").innerHTML = text
+        }
+
+        function createTable() {
+            var pos = document.getElementById("pltb")
+
+            var table = "<table d='pltb_table'>"
+            if (players.length == 1) {
+                table = table + "<th>" + players.length + " Giocatore</th>"
+            } else {
+                table = table + "<th>" + players.length + " Giocatori</th>"
+            }
+
+            for (var i = 0; i < players.length; i++) {
+                console.log(players[i], i, players.length)
+                table = table + "<tr id='pltb_tr' class='pl_" + players[i] + "'>"
+                table = table + "<td id='pltb_td_name'>"
+                table = table + "<span id='" + players[i] + "_name'>"
+                table = table + players[i]
+                table = table + "</span>"
+                table = table + "</td>"
+                //table=table+"<td id='pltb_tb_turn'>"
+                //table=table+"<span id='"+players[i]+"_turn'>"
+                //table=table+"</span>"
+                //table=table+"</td>"
+                table = table + "</tr>"
+            }
+            table = table + "</table>"
+            pos.innerHTML = table
+            console.log("### Updated Table")
+        }
+
+        function pushWord() {
+            var reg = new RegExp("/[^\s]+/")
+            var v = document.getElementById("word_input").value
+            if (v.match(reg) == v && v.length > 0) {
+                socket.emit("addWord", v)
+            }
+        }
+
+        function joined(us) {
+            socket.emit("join", us)
+            var l = document.getElementsByClassName("remove").length
+            for (var i = 0; i < l; i++) {
+                if (document.getElementsByClassName("remove")[i]) document.getElementsByClassName("remove")[i].remove()
+            }
+            createTable()
+            document.getElementById("name").innerHTML = us
+
+            document.getElementById("error").style.height = 0
+            document.getElementById("error").style.visibility = "hidden"
+            /*
+                Table with all user (overflow y -> scroll; overflow x scroll only with name)
+                table constructor:
+                Name | IsTurn
+                Name | IsTurn
+                Name | IsTurn
+                Name | IsTurn
+
+                //
+                IsTurn -> 
+                    Yes: ✓
+                    No: ✘
+                
+            */
+        }
+
+        function JoinAsUser() {
+            const regval = new RegExp('[A-Za-z]{3,}');
+            var us = document.getElementById("usernameinput").value
+            if (us.match(regval) == us) {
+                if (!players.includes(us)) {
+                    joined(us)
+                } else if (confirm("Vuoi rientrare come " + us + "?")) {
+                    joined(us)
+                } else {
+                    SendError("Nome utente già in uso")
+                }
+            } else {
+                SendError("Nome utente non valido")
+            }
+        }
+        socket.on("start", function (list) {
+            if (nwin) {
+                players = list.players
+            }
+            nwin = false;
+            console.log(players)
+        })
+        socket.on("update", function (list) {
+            players = list.players
+            if (document.getElementById("pltb").innerHTML.length > 0) {
+                createTable()
+            }
+        })
+        socket.on("newStory", function () {
+            document.getElementById("word").style.visibility = "visible";
+        })
+    </script>
+</body>
+
+</html>
